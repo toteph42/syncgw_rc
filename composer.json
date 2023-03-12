@@ -1,12 +1,12 @@
 {
-	"name" : "syncgw/roundcube-select_for_sync",
-	"description" : "Select address books, calendars and task lists in RoundCube for synchronization with sync*gw.",
+	"name" : "syncgw-rc",
+	"description" : "Select address books, calendars, task lists, notes and mail in RoundCube for synchronization with sync*gw.",
 	"type" : "roundcube-plugin",
 	"license" : "GPL-3.0+",
-	"homepage" : "https://github.com/syncgw/roundcube-select_for_sync",
+	"homepage" : "https://github.com/Toteph42/syncgw_rc",
 	"authors" : [{
 			"name" : "Florian Daeumling",
-			"homepage" : "https://syncgw.com"
+			"homepage" : "https://github.com/Toteph42"
 		}
 	],
 	"keywords" : [
@@ -14,11 +14,11 @@
 		"calendar",
 		"tasklist",
 		"todo",
+		"notes",
 		"sync",
 		"activesync",
 		"caldav",
 		"carddav",
-		"syncml",
 		"synchronization",
 		"smart phone",
 		"handy",
@@ -31,8 +31,8 @@
 		}
 	],
 	"support" : {
-		"issues" : "https://github.com/syncgw/roundcube-select_for_sync/issues",
-		"source" : "https://github.com/syncgw/roundcube-select_for_sync"
+		"issues" : "https://github.com/Toteph42/syncgw_rc/issues",
+		"source" : "https://github.com/Toteph42/syncgw_rc"
 	},
 	"require" : {
 		"roundcube/plugin-installer" : ">=0.1.3"
