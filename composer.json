@@ -1,5 +1,5 @@
 {
-	"name" : "Toteph42/syncgw-rc",
+	"name" : "toteph42/syncgw-rc",
 	"description" : "Select address books, calendars, task lists, notes and mail in RoundCube for synchronization with sync*gw.",
 	"type" : "roundcube-plugin",
 	"license" : "GPL-3.0+",
