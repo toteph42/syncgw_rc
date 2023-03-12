@@ -13,7 +13,7 @@ To use this plugin, you need
 * Please install [sync•gw plugin](https://github.com/Toteph42/syncgw-rc).
 
    ```
-  composer require toteph42/syncgw-rc
+  composer require toteph42/syncgw_rc
    ```
 
 * If you want to synchronize address books, then you don't need any additional RoundCube plugin.
@@ -48,7 +48,7 @@ To use this plugin, you need
    ```
   $config['plugins'] = array(
 	...
-	'syncgw-rc',
+	'syncgw_rc',
 	[the other optional plugins]
 	...
   );
