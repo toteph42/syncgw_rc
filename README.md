@@ -8,33 +8,28 @@ To use this plugin, you need
 
 * A functional [RoundCube](https://roundcube.net) installation.
 * [sync•gw](https://github.com/Toteph42/syncgw) installed and configured.
-* If you want to synchronize address books, then you don't need any additional RoundCube plugin.
-* If you want to use shared address books, then you need to install [globaladdressbook-Plugin](https://github.com/johndoh/roundcube-globaladdressbook).
-* If you want to synchronize calendar, then you need to install [calender plugin](https://packagist.org/packages/kolab/calendar).
-* If you want to synchronize tasklis, then you need to install [tasklist plugin](https://plugins.roundcube.net/packages/kolab/tasklist).
-* If you want to synchronize notes, then you need to install [ddnotes plugin](https://packagist.org/packages//dondominio/ddnotes).
 
 **Installation**
-
-* Please install **sync•gw plugin** 
+* Please install [sync•gw plugin](https://github.com/Toteph42/syncgw-rc).
 
    ```
   composer require syncgw/syncgw-rc
    ```
 
-* Optionally install **globaladdressbook-Plugin** 
+* If you want to synchronize address books, then you don't need any additional RoundCube plugin.
+* If you want to use shared address books, then you need to install [globaladdressbook-Plugin](https://github.com/johndoh/roundcube-globaladdressbook).
 
    ```
    composer require johndoh/globaladdressbook
    ```
   
-* Optionally install **calender plugin**
+* If you want to synchronize calendar, then you need to install [calender plugin](https://packagist.org/packages/kolab/calendar).
 
    ```
   composer require kolab/calendar
    ```
 
-* Optionally install **tasklist plugin**
+* If you want to synchronize tasklis, then you need to install [tasklist plugin](https://plugins.roundcube.net/packages/kolab/tasklist).
 
    ```
   composer require kolab/tasklist
@@ -42,7 +37,7 @@ To use this plugin, you need
   
     **Caution:** If you use the plugin and receive a error message in RoundCube log file, then please check file `plugins/tasklist/config.inc.php`. There `$config['tasklist_driver'] = 'database';` should be specified.
   
-* Optionally install [ddnotes plugin](https://packagist.org/packages/dondominio/ddnotes) 
+* If you want to synchronize notes, then you need to install [ddnotes plugin](https://packagist.org/packages//dondominio/ddnotes).
 
    ```
   composer require dondominio/ddnotes 
@@ -54,6 +49,7 @@ To use this plugin, you need
   $config['plugins'] = array(
 	...
 	'syncgw-rc',
+	[the other optional plugins]
 	...
   );
    ```
