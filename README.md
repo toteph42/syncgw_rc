@@ -7,7 +7,7 @@ With this Plugin you can specify in your [RoundCube](https://roundcube.net) inst
 To use this plugin, you need
 
 * A functional [RoundCube](https://roundcube.net) installation.
-* [sync•gw](https://github.com/Toteph42/syncgw) installed and configured.
+* [sync•gw](https://github.com/Toteph42/syncgw) installed and configured in RoundCube root directory.
 
 **Installation**
 * Please install [sync•gw plugin](https://github.com/Toteph42/syncgw-rc).
@@ -17,6 +17,7 @@ To use this plugin, you need
    ```
 
 * If you want to synchronize address books, then you don't need any additional RoundCube plugin.
+
 * If you want to use shared address books, then you need to install [globaladdressbook-Plugin](https://github.com/johndoh/roundcube-globaladdressbook).
 
    ```
@@ -56,8 +57,8 @@ To use this plugin, you need
 	
 **Usage**
 
-* Go to menu `Settings` and configure synchronization settings by selecting `Synchronization settings`.
-* Now you're ready to synchronize your selected data with your cell phone / smart phone.
+* Go to menu `Settings` and configure synchronization settings by selecting `Synchronization settings`.If this selection does not appear, then you did not install **sync•gw** in RoundCube root directory.
+* Now you're ready to synchronize your selected data with your cell phone / smart phone. If you need some help how to configure you device, take a look a [sync•gw FAQ](https://github.com/toteph42/syncgw/blob/master/downloads/FAQ.md).
 
 Please enjoy!
 

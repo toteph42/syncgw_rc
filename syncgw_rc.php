@@ -79,9 +79,17 @@ class syncgw_rc extends rcube_plugin {
         $prefs = $this->rc->user->get_prefs();
         $prefs = $prefs['syncgw'];
 
-	    // mail
-        if (1) {
-        	$args['blocks']['syncgw_m']['name'] = $this->gettext('syncgw_m_head');
+        if (!file_exists($path = '..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'syncgw'.DIRECTORY_SEPARATOR.'config.ini.php')) {
+        	if (!file_exists($path = DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'syncgw'.DIRECTORY_SEPARATOR.'syncgw'.DIRECTORY_SEPARATOR.'config.ini.php'))
+ 	        	return;
+        }
+
+        $enabled = @parse_ini_file($path);
+
+	    // DataStore::MAIL
+		if ($enabled['Datastores'] & 0x01000) {
+
+			$args['blocks']['syncgw_m']['name'] = $this->gettext('syncgw_m_head');
         	$n = 0;
         	$c = new html_checkbox([
     				'name' 	    => '_syncgw_m'.$n,
@@ -94,131 +102,143 @@ class syncgw_rc extends rcube_plugin {
 			];
         }
 
-        // address books
-        $args['blocks']['syncgw_a']['name'] = $this->gettext('syncgw_a_head');
+        // DataStore::CONTACT
+       	if ($enabled['Datastores'] & 0x00200) {
 
-        $n = 0;
-    	foreach ($this->rc->get_address_sources() as $a) {
-            $c = new html_checkbox([
-			         'name'     => '_syncgw_a'.$n,
-    				 'id' 	    => '_syncgw_a'.$n,
-	       			 'value'    => self::ABOOK_FULL.$a['id'],
-			]);
-            $p = new html_checkbox([
-			         'name'     => '_syncgw_p'.$n,
-    				 'id' 	    => '_syncgw_p'.$n,
-	       			 'value'    => self::ABOOK_SMALL.$a['id'],
-			]);
-            $args['blocks']['syncgw_a']['options']['syncgw'.$n] = [
-	       			'title' 	=> rcube::Q('"'.$a['name'].'"'),
-			     	'content' 	=> $c->show(strpos($prefs, self::ABOOK_FULL.$a['id'].';') !== false ? self::ABOOK_FULL.$a['id'] : null).' '.
-                                   rcube::Q($this->gettext('syncgw_a_tonly')).' '.
-                                   $p->show(strpos($prefs, self::ABOOK_SMALL.$a['id'].';') !== false ? self::ABOOK_SMALL.$a['id'] : null),
-            ];
-            $n++;
-		}
-        $c = new html_checkbox([
-			'name'     => '_syncgw_m',
-    		'id' 	   => '_syncgw_m',
-	       	'value'    => self::ABOOK_MERGE,
-		]);
-        $args['blocks']['syncgw_a']['options']['syncgw'.$n] = [
-	    	'title' 	=> $this->gettext('syncgw_x_text'),
-			'content' 	=> '&nbsp;&nbsp;'.$c->show(strpos($prefs, self::ABOOK_MERGE) !== false ? self::ABOOK_MERGE : null),
-        ];
+       		$args['blocks']['syncgw_a']['name'] = $this->gettext('syncgw_a_head');
 
-		// calendars
-        $args['blocks']['syncgw_c']['name'] = $this->gettext('syncgw_c_head');
-
-        if (!is_object($this->cal_db)) {
-
-            // calendar.php:function load_driver() -- START
-
-        	if ($cal = $this->rc->plugins->get_plugin('calendar')) {
-	            $n = $this->rc->config->get('calendar_driver', 'database');
-    	        $c = $n.'_driver';
-
-        	    require_once($cal->home.'/drivers/calendar_driver.php');
-            	require_once($cal->home.'/drivers/'.$n.'/'.$c.'.php');
-
-	            $this->cal_db = new $c($cal);
-    	        // -- END
-        	}
-        }
-
-		$n = 0;
-		if ($this->cal_db) {
-	        foreach ($this->cal_db->list_calendars(calendar_driver::FILTER_ALL) as $a) {
-    	        if (!$a['active'] || $a['id'] == calendar_driver::BIRTHDAY_CALENDAR_ID)
-        	        continue;
+	        $n = 0;
+	    	foreach ($this->rc->get_address_sources() as $a) {
 	            $c = new html_checkbox([
-    					'name' 	    => '_syncgw_c'.$n,
-	   			    	'id' 	    => '_syncgw_c'.$n,
-					    'value'     => self::CAL_FULL.$a['id'],
-	            ]);
-	    	    $args['blocks']['syncgw_c']['options']['syncgw'.$n] = [
+				         'name'     => '_syncgw_a'.$n,
+	    				 'id' 	    => '_syncgw_a'.$n,
+		       			 'value'    => self::ABOOK_FULL.$a['id'],
+				]);
+	            $p = new html_checkbox([
+				         'name'     => '_syncgw_p'.$n,
+	    				 'id' 	    => '_syncgw_p'.$n,
+		       			 'value'    => self::ABOOK_SMALL.$a['id'],
+				]);
+	            $args['blocks']['syncgw_a']['options']['syncgw'.$n] = [
 		       			'title' 	=> rcube::Q('"'.$a['name'].'"'),
-				     	'content' 	=> '&nbsp;&nbsp;'.$c->show(strpos($prefs, self::CAL_FULL.$a['id'].';') !== false ? self::CAL_FULL.$a['id'] : null),
+				     	'content' 	=> $c->show(strpos($prefs, self::ABOOK_FULL.$a['id'].';') !== false ? self::ABOOK_FULL.$a['id'] : null).' '.
+	                                   rcube::Q($this->gettext('syncgw_a_tonly')).' '.
+	                                   $p->show(strpos($prefs, self::ABOOK_SMALL.$a['id'].';') !== false ? self::ABOOK_SMALL.$a['id'] : null),
+	            ];
+	            $n++;
+			}
+    	    $c = new html_checkbox([
+				'name'     => '_syncgw_m',
+    			'id' 	   => '_syncgw_m',
+		       	'value'    => self::ABOOK_MERGE,
+			]);
+    	    $args['blocks']['syncgw_a']['options']['syncgw'.$n] = [
+		    	'title' 	=> $this->gettext('syncgw_x_text'),
+				'content' 	=> '&nbsp;&nbsp;'.$c->show(strpos($prefs, self::ABOOK_MERGE) !== false ? self::ABOOK_MERGE : null),
+    	    ];
+       	}
+
+		// DataStore::CALENDAR
+       	if ($enabled['Datastores'] & 0x00100) {
+
+       		$args['blocks']['syncgw_c']['name'] = $this->gettext('syncgw_c_head');
+
+	        if (!is_object($this->cal_db)) {
+
+	            // calendar.php:function load_driver() -- START
+
+	        	if ($cal = $this->rc->plugins->get_plugin('calendar')) {
+		            $n = $this->rc->config->get('calendar_driver', 'database');
+	    	        $c = $n.'_driver';
+
+	        	    require_once($cal->home.'/drivers/calendar_driver.php');
+	            	require_once($cal->home.'/drivers/'.$n.'/'.$c.'.php');
+
+		            $this->cal_db = new $c($cal);
+	    	        // -- END
+	        	}
+	        }
+
+			$n = 0;
+			if ($this->cal_db) {
+		        foreach ($this->cal_db->list_calendars(calendar_driver::FILTER_ALL) as $a) {
+	    	        if (!$a['active'] || $a['id'] == calendar_driver::BIRTHDAY_CALENDAR_ID)
+	        	        continue;
+		            $c = new html_checkbox([
+    						'name' 	    => '_syncgw_c'.$n,
+		   			    	'id' 	    => '_syncgw_c'.$n,
+						    'value'     => self::CAL_FULL.$a['id'],
+		            ]);
+		    	    $args['blocks']['syncgw_c']['options']['syncgw'.$n] = [
+			       			'title' 	=> rcube::Q('"'.$a['name'].'"'),
+					     	'content' 	=> '&nbsp;&nbsp;'.$c->show(strpos($prefs, self::CAL_FULL.$a['id'].';') !== false ? self::CAL_FULL.$a['id'] : null),
+					];
+		    	    $n++;
+		        }
+			}
+       	}
+
+		// DataStore::TASK
+       	if ($enabled['Datastores'] & 0x00800) {
+
+       		$args['blocks']['syncgw_t']['name'] = $this->gettext('syncgw_t_head');
+
+	        if (!is_object($this->tsk_db)) {
+
+	            // tasklist.php:function load_driver() -- START
+
+	        	if ($tsk = $this->rc->plugins->get_plugin('tasklist')) {
+		            $n   = $this->rc->config->get('tasklist_driver', 'database');
+	    	        $c   = 'tasklist_' . $n . '_driver';
+
+    	    	    require_once($tsk->home.'/drivers/tasklist_driver.php');
+    	        	require_once($tsk->home.'/drivers/'.$n.'/'.$c.'.php');
+
+		            $this->tsk_db = new $c($tsk);
+    		        // -- END
+    	    	}
+    	    }
+
+ 			$n = 0;
+ 			if ($this->tsk_db) {
+		        foreach ($this->tsk_db->get_lists(tasklist_driver::FILTER_ALL) as $a) {
+	    	        if (!$a['active'])
+	    	            continue;
+	    	        $c = new html_checkbox([
+	    					'name' 	    => '_syncgw_t'.$n,
+			   			    'id' 	    => '_syncgw_t'.$n,
+						    'value'     => self::TASK_FULL.$a['tasklist_id'],
+	    	        ]);
+	    		    $args['blocks']['syncgw_t']['options']['syncgw'.$n] = [
+			       			'title' 	=> rcube::Q('"'.$a['name'].'"'),
+					     	'content' 	=> '&nbsp;&nbsp;'.$c->show(strpos($prefs, self::TASK_FULL.$a['tasklist_id'].';') !== false ?
+					     	                        self::TASK_FULL.$a['tasklist_id'] : null),
+					];
+	    		    $n++;
+	    	    }
+ 			}
+       	}
+
+		// DataStore::NOTES
+       	if ($enabled['Datastores'] & 0x00400) {
+
+       		$args['blocks']['syncgw_n']['name'] = $this->gettext('syncgw_n_head');
+
+	        if ($this->rc->plugins->get_plugin('ddnotes')) {
+		 		$n = 0;
+	            $c = new html_checkbox([
+	    				'name' 	    => '_syncgw_n'.$n,
+		   			    'id' 	    => '_syncgw_n'.$n,
+					    'value'     => self::NOTES_FULL.$n,
+	            ]);
+	    	    $args['blocks']['syncgw_n']['options']['syncgw'.$n] = [
+		       			'title' 	=> '"'.$this->gettext('syncgw_n_text').'"',
+				     	'content' 	=> '&nbsp;&nbsp;'.$c->show(strpos($prefs, self::NOTES_FULL.$n.';') !== false ?
+				     	                        self::NOTES_FULL.$n : null),
 				];
 	    	    $n++;
-	        }
-		}
-
-		// task lists
-        $args['blocks']['syncgw_t']['name'] = $this->gettext('syncgw_t_head');
-
-        if (!is_object($this->tsk_db)) {
-
-            // tasklist.php:function load_driver() -- START
-
-        	if ($tsk = $this->rc->plugins->get_plugin('tasklist')) {
-	            $n   = $this->rc->config->get('tasklist_driver', 'database');
-    	        $c   = 'tasklist_' . $n . '_driver';
-
-        	    require_once($tsk->home.'/drivers/tasklist_driver.php');
-            	require_once($tsk->home.'/drivers/'.$n.'/'.$c.'.php');
-
-	            $this->tsk_db = new $c($tsk);
-    	        // -- END
-        	}
-        }
-
- 		$n = 0;
- 		if ($this->tsk_db) {
-	        foreach ($this->tsk_db->get_lists(tasklist_driver::FILTER_ALL) as $a) {
-	            if (!$a['active'])
-	                continue;
-	            $c = new html_checkbox([
-	    				'name' 	    => '_syncgw_t'.$n,
-		   			    'id' 	    => '_syncgw_t'.$n,
-					    'value'     => self::TASK_FULL.$a['tasklist_id'],
-	            ]);
-	    	    $args['blocks']['syncgw_t']['options']['syncgw'.$n] = [
-		       			'title' 	=> rcube::Q('"'.$a['name'].'"'),
-				     	'content' 	=> '&nbsp;&nbsp;'.$c->show(strpos($prefs, self::TASK_FULL.$a['tasklist_id'].';') !== false ?
-				     	                        self::TASK_FULL.$a['tasklist_id'] : null),
-				];
-	    	    $n++;
-	        }
- 		}
-
-		// notes
-        $args['blocks']['syncgw_n']['name'] = $this->gettext('syncgw_n_head');
-
-        if ($this->rc->plugins->get_plugin('ddnotes')) {
-	 		$n = 0;
-            $c = new html_checkbox([
-    				'name' 	    => '_syncgw_n'.$n,
-	   			    'id' 	    => '_syncgw_n'.$n,
-				    'value'     => self::NOTES_FULL.$n,
-            ]);
-    	    $args['blocks']['syncgw_n']['options']['syncgw'.$n] = [
-	       			'title' 	=> '"'.$this->gettext('syncgw_n_text').'"',
-			     	'content' 	=> '&nbsp;&nbsp;'.$c->show(strpos($prefs, self::NOTES_FULL.$n.';') !== false ?
-			     	                        self::NOTES_FULL.$n : null),
-			];
-    	    $n++;
- 		}
+	 		}
+       	}
 
  		return $args;
     }
