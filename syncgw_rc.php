@@ -79,7 +79,7 @@ class syncgw_rc extends rcube_plugin {
         $prefs = $this->rc->user->get_prefs();
         $prefs = $prefs['syncgw'];
 
-        if (!file_exists($path = __DIR__.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'syncgw'.DIRECTORY_SEPARATOR.'config.ini.php')) {
+        if (!file_exists($path = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'syncgw'.DIRECTORY_SEPARATOR.'config.ini.php')) {
         	if (!file_exists($path = DIRECTORY_SEPARATOR.'www'.DIRECTORY_SEPARATOR.'syncgw'.DIRECTORY_SEPARATOR.'syncgw'.DIRECTORY_SEPARATOR.'config.ini.php'))
  	        	return;
         }
